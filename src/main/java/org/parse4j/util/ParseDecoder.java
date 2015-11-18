@@ -51,6 +51,10 @@ public class ParseDecoder {
 			return decodePointer(jsonObject.optString("className"),
 					jsonObject.optString("objectId"));
 		}
+		
+		if(typeString.equals("Object")){
+			return decodePointerWithData(jsonObject.optString("className"), jsonObject);
+		}
 
 		if (typeString.equals("File")) {
 			return new ParseFile(jsonObject.optString("name"),
@@ -87,7 +91,28 @@ public class ParseDecoder {
 	
 	private static ParseObject decodePointer(String className, String objectId) {
 	    return ParseObject.createWithoutData(className, objectId);
-	  }	
+	}
+	
+	private static ParseObject decodePointerWithData(String className, JSONObject data) {
+		ParseObject po = null;
+		Class<?> clazz = ParseRegistry.getParseClass(className);
+		
+		if(clazz != null) {
+			try {
+				po = (ParseObject) clazz.newInstance();
+				po.setData(data, true);
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		} else {
+			po = new ParseObject(className);
+			po.setData(data, true);
+		}
+		
+		return po;
+	}	
 
 	private static List<Object> convertJSONArrayToList(JSONArray array) {
 		List<Object> list = new ArrayList<Object>();

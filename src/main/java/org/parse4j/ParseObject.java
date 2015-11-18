@@ -724,7 +724,7 @@ public class ParseObject {
 	protected void setData(JSONObject jsonObject) {
 		  setData(jsonObject, false);  
 	}
-	protected void setData(JSONObject jsonObject, boolean disableChecks) {
+	public void setData(JSONObject jsonObject, boolean disableChecks) {
 		Iterator<?> it = jsonObject.keys();
 		while (it.hasNext()) {
 			String key = (String) it.next();
